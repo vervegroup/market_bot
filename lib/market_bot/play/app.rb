@@ -98,6 +98,13 @@ module MarketBot
         result[:description]  = doc.at_css('div[itemprop="description"]').inner_html.strip if doc.at_css('div[itemprop="description"]')
         result[:title]        = doc.at_css('h1[itemprop="name"]').text
 
+        cdata = doc.at_css('script[type="application/ld+json"]').children.find{|e| e.cdata?}
+        aggregateRating = JSON.parse(cdata.to_s, {:symbolize_names => true})[:aggregateRating]
+        if aggregateRating
+          result[:rating] = aggregateRating[:ratingValue]
+          result[:votes]  = aggregateRating[:ratingCount].to_i
+        end
+
         if doc.at_css('meta[itemprop="ratingValue"]')
           node            = doc.at_css('meta[itemprop="ratingValue"]')
           result[:rating] = node[:content].strip if node
