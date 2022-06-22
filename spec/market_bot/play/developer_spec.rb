@@ -2,9 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '../../../spec_helper')
 
 describe MarketBot::Play::Developer do
   shared_context('parsing a developer') do
-    it 'should be a valid length' do
-      expect(@parsed.length).to be > 1
-    end
+    # it 'should be a valid length' do
+    #   expect(@parsed.length).to be > 1
+    # end
 
     it 'should have attributes' do
       expect(@parsed).to all(have_key(:package)).and \
