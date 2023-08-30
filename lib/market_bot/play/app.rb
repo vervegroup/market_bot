@@ -9,7 +9,7 @@ module MarketBot
       def self.parse(html, _opts = {})
         result = {}
 
-        doc = Nokogiri::HTML(html)
+        doc = Nokogiri::HTML(html, nil, Encoding::UTF_8.to_s)
 
         result[:website_url]      = doc.xpath("//div[contains(text(), 'Website')]")&.first&.next&.text
         result[:email]            = doc.xpath("//div[contains(text(), 'Email')]")&.first&.next&.text
