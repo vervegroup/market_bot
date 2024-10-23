@@ -3,6 +3,7 @@ require 'cgi'
 
 require 'typhoeus'
 require 'nokogiri'
+require 'json'
 
 require 'market_bot/version'
 require 'market_bot/exceptions'
