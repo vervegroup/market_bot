@@ -16,7 +16,7 @@ module MarketBot
         result[:physical_address] = doc.xpath("//div[contains(text(), 'Address')]")&.first&.next&.text
         result[:privacy_url]      = doc.xpath("//div[contains(text(), 'Privacy policy')]")&.first&.next&.text
         result[:updated]          = doc.xpath("//div[contains(text(), 'Updated on')]")&.first&.next&.text
-        result[:title]            = doc.at_css('h1[itemprop="name"]').text
+        result[:title]            = doc.at_css('h1 span[itemprop="name"]')&.text
         result[:description]      = doc.at_css('meta[itemprop="description"]')&.next&.inner_html&.strip
         result[:contains_ads]     = !!doc.at('div:contains("Contains ads")')
 
@@ -55,15 +55,14 @@ module MarketBot
         end
 
         node = doc.at_css('img[alt="Icon image"]')
-        result[:cover_image_url] = MarketBot::Util.fix_content_url(node[:src]) if node.present?
+        result[:cover_image_url] = MarketBot::Util.fix_content_url(node[:src]) if node
 
-        nodes = doc.search('img[alt="Screenshot image"]', 'img[alt="Screenshot"]')
+        nodes = doc.search('img[alt="Screenshot image"], img[alt="Screenshot"]')
         result[:screenshot_urls] = []
-        if nodes.present?
-          result[:screenshot_urls] = nodes.map do |n|
-            MarketBot::Util.fix_content_url(n[:src])
-          end
-        end
+
+        result[:screenshot_urls] = nodes.map do |n|
+          MarketBot::Util.fix_content_url(n[:src])
+        end  if nodes.any?
 
         node               = doc.at_css('h2:contains("What\'s new")')&.ancestors('header')&.first&.next&.children
         result[:whats_new] = node.inner_html if node
